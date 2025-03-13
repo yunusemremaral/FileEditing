@@ -242,5 +242,319 @@ public class Program
         //Console.WriteLine("Filtreleme işlemi tamamlandı. Çıktı dosyası: " + outputFilePath);
         #endregion
 
+
+        using System;
+        using System.IO;
+
+class Program
+    {
+        static void Main()
+        {
+            string inputFilePath = @"C:\Users\imgoz\Desktop\IMDB DATABASE\title.basics.txt";
+            string outputFilePath = @"C:\Users\imgoz\Desktop\IMDB DATABASE\title.basics.filtered.txt";
+
+            try
+            {
+                Input dosyasını oku
+               var lines = File.ReadAllLines(inputFilePath);
+
+                using (StreamWriter writer = new StreamWriter(outputFilePath))
+                {
+                    foreach (var line in lines)
+                    {
+                        Satırı virgülle ayıralım
+                       var columns = line.Split('\t');
+
+                        Eğer titleType 'movie' ise, bu satırı yaz
+                        if (columns[1] == "movie")
+                        {
+                            writer.WriteLine(line);
+                        }
+                    }
+                }
+
+                Console.WriteLine("Filtreleme işlemi tamamlandı. Sonuçlar: " + outputFilePath);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Bir hata oluştu: " + ex.Message);
+            }
+        }
+    }
+
+using System;
+using System.IO;
+
+class Program
+{
+    static void Main()
+    {
+        string filePath = @"C:\Users\imgoz\Desktop\IMDB DATABASE\title.basics.filtered.txt";
+
+        try
+        {
+            Dosyadaki tüm satırları oku
+            var lines = File.ReadAllLines(filePath);
+
+            'movie' olan satırları say
+            int movieCount = 0;
+
+            foreach (var line in lines)
+            {
+                var columns = line.Split('\t');
+
+                Eğer titleType 'movie' ise, sayacı artır
+                if (columns[1] == "movie")
+                {
+                    movieCount++;
+                }
+            }
+
+            Console.WriteLine("Toplam film sayısı: " + movieCount);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Bir hata oluştu: " + ex.Message);
+        }
+    }
+}
+
+using System;
+using System.IO;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main()
+    {
+        string basicsFilePath = @"C:\Users\imgoz\Desktop\IMDB DATABASE\title.basics.filtered.txt";
+        string ratingsFilePath = @"C:\Users\imgoz\Desktop\IMDB DATABASE\title.ratings.txt";
+        string outputFilePath = @"C:\Users\imgoz\Desktop\IMDB DATABASE\title.ratings.filtered.txt";
+
+        try
+        {
+            title.basics.filtered.txt dosyasındaki movie ID'lerini oku
+            var movieIds = new HashSet<string>();
+            var basicsLines = File.ReadAllLines(basicsFilePath);
+
+            foreach (var line in basicsLines)
+            {
+                var columns = line.Split('\t');
+                Eğer titleType movie ise, ID'yi listeye ekle
+                if (columns[1] == "movie")
+                {
+                    movieIds.Add(columns[0]);
+                }
+            }
+
+            title.ratings.txt dosyasını oku ve sadece filtrelenmiş movie ID'leri ile eşleşenleri al
+            var ratingsLines = File.ReadAllLines(ratingsFilePath);
+
+            using (StreamWriter writer = new StreamWriter(outputFilePath))
+            {
+                foreach (var line in ratingsLines)
+                {
+                    var columns = line.Split('\t');
+                    string tconst = columns[0];
+
+                    Eğer tconst, title.basics.filtered.txt'ye ait movie ID'lerinden birine eşitse, yazdır
+                    if (movieIds.Contains(tconst))
+                    {
+                        writer.WriteLine(line);  // Eşleşen satırı çıktı dosyasına yaz
+                    }
+                }
+            }
+
+            Console.WriteLine("Filtreleme tamamlandı. Sonuç: " + outputFilePath);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Bir hata oluştu: " + ex.Message);
+        }
+    }
+}
+using System;
+using System.Collections.Generic;
+using System.IO;
+
+class Program
+{
+    static void Main()
+    {
+        string crewFilePath = @"C:\Users\imgoz\Desktop\IMDB DATABASE\title.crew.txt";
+        string ratingsFilePath = @"C:\Users\imgoz\Desktop\IMDB DATABASE\title.ratings.filtered.txt";
+        string outputFilePath = @"C:\Users\imgoz\Desktop\IMDB DATABASE\title.crew.filtered.txt";
+
+        title.ratings.filtered.txt dosyasındaki movie id'lerini oku
+        HashSet<string> validIds = new HashSet<string>();
+        using (StreamReader sr = new StreamReader(ratingsFilePath))
+        {
+            sr.ReadLine(); // İlk satırı atla (başlık satırı)
+            string line;
+            while ((line = sr.ReadLine()) != null)
+            {
+                string[] parts = line.Split('\t');
+                if (parts.Length > 0)
+                {
+                    validIds.Add(parts[0]); // tconst (movie ID)
+                }
+            }
+        }
+
+        title.crew.txt dosyasını filtrele
+        using (StreamReader sr = new StreamReader(crewFilePath))
+        using (StreamWriter sw = new StreamWriter(outputFilePath))
+        {
+            string line;
+            while ((line = sr.ReadLine()) != null)
+            {
+                string[] parts = line.Split('\t');
+                if (parts.Length > 0 && validIds.Contains(parts[0])) // tconst değeri geçerliyse
+                {
+                    sw.WriteLine(line); // Geçerli satırı yaz
+                }
+            }
+        }
+
+        Console.WriteLine("Filtreleme işlemi tamamlandı.");
+    }
+}
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+
+class Program
+{
+    static void Main()
+    {
+        string nameFilePath = @"C:\Users\imgoz\Desktop\IMDB DATABASE\name.basics.txt";
+        string ratingsFilePath = @"C:\Users\imgoz\Desktop\IMDB DATABASE\title.ratings.filtered.txt";
+        string basicsFilePath = @"C:\Users\imgoz\Desktop\IMDB DATABASE\title.basics.filtered.txt";
+        string outputFilePath = @"C:\Users\imgoz\Desktop\IMDB DATABASE\name.basics.filtered.txt";
+
+        title.ratings.filtered.txt dosyasındaki movie id'lerini oku
+        HashSet<string> validMovieIds = new HashSet<string>();
+        using (StreamReader sr = new StreamReader(ratingsFilePath))
+        {
+            sr.ReadLine(); // Başlık satırını atla
+            string line;
+            while ((line = sr.ReadLine()) != null)
+            {
+                string[] parts = line.Split('\t');
+                if (parts.Length > 0)
+                {
+                    validMovieIds.Add(parts[0]); // tconst (movie ID)
+                }
+            }
+        }
+
+        title.basics.filtered.txt dosyasındaki movie ID'lerini oku
+        HashSet<string> validMovieTypes = new HashSet<string>();
+        using (StreamReader sr = new StreamReader(basicsFilePath))
+        {
+            sr.ReadLine(); // Başlık satırını atla
+            string line;
+            while ((line = sr.ReadLine()) != null)
+            {
+                string[] parts = line.Split('\t');
+                if (parts.Length > 0 && parts[1] == "movie") // sadece movie türündeki filmleri al
+                {
+                    validMovieTypes.Add(parts[0]); // tconst (movie ID)
+                }
+            }
+        }
+
+        name.basics.tsv dosyasını filtrele
+        using (StreamReader sr = new StreamReader(nameFilePath))
+        using (StreamWriter sw = new StreamWriter(outputFilePath))
+        {
+            string line;
+            while ((line = sr.ReadLine()) != null)
+            {
+                string[] parts = line.Split('\t');
+                if (parts.Length > 0)
+                {
+                    string[] knownForTitles = parts[5].Split(',');
+                    bool isValid = false;
+
+                    Kişinin oynadığı veya yer aldığı film ID'leri ile validMovieIds karşılaştır
+                    foreach (var title in knownForTitles)
+                    {
+                        if (validMovieIds.Contains(title) && validMovieTypes.Contains(title))
+                        {
+                            isValid = true;
+                            break;
+                        }
+                    }
+
+                    Eğer kişi geçerli bir filmde oynadıysa, satırı kaydet
+                    if (isValid)
+                    {
+                        sw.WriteLine(line);
+                    }
+                }
+            }
+        }
+
+        Console.WriteLine("Filtreleme işlemi tamamlandı.");
+    }
+}
+using System;
+using System.Collections.Generic;
+using System.IO;
+
+class Program
+{
+    static void Main()
+    {
+        Dosya yolları
+        string akasFilePath = @"C:\Users\imgoz\Desktop\IMDB DATABASE\title.akas.txt";
+        string ratingsFilePath = @"C:\Users\imgoz\Desktop\IMDB DATABASE\title.ratings.filtered.txt";
+        string outputFilePath = @"C:\Users\imgoz\Desktop\IMDB DATABASE\title.akas.filtered.txt";
+
+        title.ratings.filtered.txt dosyasındaki movie id'lerini oku
+        HashSet<string> validMovieIds = new HashSet<string>();
+        using (StreamReader sr = new StreamReader(ratingsFilePath))
+        {
+            sr.ReadLine(); // Başlık satırını atla
+            string line;
+            while ((line = sr.ReadLine()) != null)
+            {
+                string[] parts = line.Split('\t');
+                if (parts.Length > 0)
+                {
+                    validMovieIds.Add(parts[0]); // tconst (movie ID)
+                }
+            }
+        }
+
+        title.akas.txt dosyasındaki fazlalıkları azalt
+        using (StreamReader sr = new StreamReader(akasFilePath))
+        using (StreamWriter sw = new StreamWriter(outputFilePath))
+        {
+            string line;
+            while ((line = sr.ReadLine()) != null)
+            {
+                string[] parts = line.Split('\t');
+                if (parts.Length > 0)
+                {
+                    string movieId = parts[0]; // tconst (movie ID)
+
+                    Sadece validMovieIds içindeki ID'leri al
+                    if (validMovieIds.Contains(movieId))
+                    {
+                        sw.WriteLine(line); // Geçerli film bilgilerini yaz
+                    }
+                }
+            }
+        }
+
+        Console.WriteLine("Filtreleme işlemi tamamlandı.");
+    }
+}
+
+
+
     }
 }
