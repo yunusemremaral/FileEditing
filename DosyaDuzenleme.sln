@@ -5,6 +5,8 @@ VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Programm", "Programm\Programm.csproj", "{3FB034E3-560C-40F4-97CC-1FD803793027}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImdbRandomMovie", "ImdbRandomMovie\ImdbRandomMovie.csproj", "{588DE116-62CF-4A4E-8A2E-A60099F6E8AB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{3FB034E3-560C-40F4-97CC-1FD803793027}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3FB034E3-560C-40F4-97CC-1FD803793027}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3FB034E3-560C-40F4-97CC-1FD803793027}.Release|Any CPU.Build.0 = Release|Any CPU
+		{588DE116-62CF-4A4E-8A2E-A60099F6E8AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{588DE116-62CF-4A4E-8A2E-A60099F6E8AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{588DE116-62CF-4A4E-8A2E-A60099F6E8AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{588DE116-62CF-4A4E-8A2E-A60099F6E8AB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
