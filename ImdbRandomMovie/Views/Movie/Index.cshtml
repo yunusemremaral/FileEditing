@@ -1,20 +1,16 @@
-﻿@model IEnumerable<ImdbRandomMovie.Models.MovieModel>
+﻿@* Views/Movie/Index.cshtml *@
+@model IEnumerable<MovieViewModel>
 
-@{
-    ViewData["Title"] = "Random Movies";
-}
+<h1>IMDB Film Listesi</h1>
 
-<h2>@ViewData["Title"]</h2>
-
-<table class="table">
+<table class="table table-striped">
     <thead>
         <tr>
-            <th>Title</th>
-            <th>Original Title</th>
-            <th>Start Year</th>
-            <th>Runtime (Minutes)</th>
-            <th>Average Rating</th>
-            <th>Number of Votes</th>
+            <th>Film Adı</th>
+            <th>Yıl</th>
+            <th>Tür</th>
+            <th>IMDB Puanı</th>
+            <th>Yönetmen</th>
         </tr>
     </thead>
     <tbody>
@@ -22,13 +18,17 @@
         {
             <tr>
                 <td>@movie.PrimaryTitle</td>
-                <td>@movie.OriginalTitle</td>
                 <td>@movie.StartYear</td>
-                <td>@movie.RuntimeMinutes</td>
-                <td>@movie.AverageRating</td>
-                <td>@movie.NumVotes</td>
+                <td>@movie.Genres</td>
+                <td>@(movie.AverageRating?.ToString("0.0") ?? "Puan yok")</td>
+                <td>@(movie.Directors ?? "Bilgi yok")</td>
             </tr>
         }
     </tbody>
 </table>
-<a href="@Url.Action("RandomMovies", "Movie")" class="btn btn-primary">Show Random Movies</a>
+
+<!-- Sayfalama ekleyebiliriz -->
+<div class="pagination">
+    <a href="/Movie/Index?page=1" class="btn btn-primary">İlk Sayfa</a>
+    <a href="/Movie/Index?page=@(ViewBag.CurrentPage + 1)" class="btn btn-primary">Sonraki</a>
+</div>

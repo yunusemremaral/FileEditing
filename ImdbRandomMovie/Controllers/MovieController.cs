@@ -1,11 +1,10 @@
-﻿using Dapper;
+﻿// MovieController.cs
+using Dapper;
+using ImdbRandomMovie.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Data.SqlClient;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using ImdbRandomMovie.Models;
 
-namespace YourNamespace.Controllers
+namespace ImdbRandomMovie.Controllers
 {
     public class MovieController : Controller
     {
@@ -16,22 +15,41 @@ namespace YourNamespace.Controllers
             _connectionString = configuration.GetConnectionString("DefaultConnection");
         }
 
-        // GET: /Movie/Index
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 20)
         {
-            var movies = await GetMoviesAsync();
-            return View(movies);
-        }
+            // SQL Sorgusu (En kritik kısım)
+            var sql = @"
+                SELECT 
+                    b.tconst AS Tconst,
+                    b.primaryTitle AS PrimaryTitle,
+                    b.startYear AS StartYear,
+                    b.genres AS Genres,
+                    r.averageRating AS AverageRating,
+                    c.directors AS Directors
+                FROM 
+                    [title.basics.filtered] b
+                LEFT JOIN 
+                    [title.ratings.filtered] r ON b.tconst = r.tconst
+                LEFT JOIN 
+                    [title.crew.filtered] c ON b.tconst = c.tconst
+                ORDER BY 
+                    r.averageRating DESC
+                OFFSET 
+                    @Offset ROWS 
+                FETCH NEXT 
+                    @PageSize ROWS ONLY";
 
-        // Movie verilerini çekmek için Dapper kullanacağız
-        private async Task<IEnumerable<Movie>> GetMoviesAsync()
-        {
             using (var connection = new SqlConnection(_connectionString))
             {
-                await connection.OpenAsync();
-                var query = "SELECT * FROM Movies"; // Movies tablosu adını kendi veritabanınıza göre değiştirin
-                var movies = await connection.QueryAsync<Movie>(query);
-                return movies;
+                // Timeout'u 120 saniyeye çıkarıyoruz
+                var command = new CommandDefinition(
+                    sql,
+                    new { Offset = (page - 1) * pageSize, PageSize = pageSize },
+                    commandTimeout: 120
+                );
+
+                var movies = await connection.QueryAsync<MovieViewModel>(command);
+                return View(movies);
             }
         }
     }
