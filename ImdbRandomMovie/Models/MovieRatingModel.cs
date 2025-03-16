@@ -5,6 +5,7 @@
         public string Title { get; set; }
         public int Votes { get; set; }
         public double Rating { get; set; }
+        public string Genres { get; set; }
 
     }
 }

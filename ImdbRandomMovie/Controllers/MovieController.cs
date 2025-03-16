@@ -15,28 +15,42 @@ namespace ImdbRandomMovie.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Movie()
+        // Movie sayfasını render edecek GET aksiyonu
+        public async Task<IActionResult> Movie(string genre, int minRating = 7, int minVotes = 10000)
         {
-            var movies = await (from rating in _context.TitleRatingsFiltereds
-                                join basics in _context.TitleBasicsFiltereds
-                                on rating.Tconst equals basics.Tconst
-                                where rating.NumVotes > 10000 && rating.AverageRating > 80
-                                && basics.Genres.Contains("Action") // Burada genre içeriğini kontrol ediyoruz
-                                orderby Guid.NewGuid() // Rastgele sıralama
-                                select new MovieRatingModel
-                                {
-                                    Title = basics.PrimaryTitle,
-                                    Votes = rating.NumVotes.Value,
-                                    Rating = rating.AverageRating.Value
-                                })
-                                .Take(10)
-                                .ToListAsync();
+            // Filtreleme sorgusunu başlatıyoruz
+            var query = from rating in _context.TitleRatingsFiltereds
+                        join basics in _context.TitleBasicsFiltereds
+                        on rating.Tconst equals basics.Tconst
+                        where rating.NumVotes > minVotes // Min oy sayısı filtresi
+                              && rating.AverageRating > minRating // Min rating filtresi
+                        select new MovieRatingModel
+                        {
+                            Title = basics.PrimaryTitle,
+                            Votes = rating.NumVotes.Value,
+                            Rating = rating.AverageRating.Value,
+                            Genres = basics.Genres
+                        };
 
-            return View(movies);
+            // Genre filtresi ekliyoruz
+            if (!string.IsNullOrEmpty(genre))
+            {
+                query = query.Where(m => m.Genres.Contains(genre));
+            }
+
+            // Sıralama işlemi ve sadece ilk 10 kaydı alma
+            var movies = await query.OrderBy(m => Guid.NewGuid()) // Rastgele sıralama
+                                    .Take(10)
+                                    .ToListAsync();
+
+            // Filmleri view'e gönderiyoruz
+            return View(new MovieFilterViewModel
+            {
+                Movies = movies,
+                Genre = genre,
+                MinRating = minRating,
+                MinVotes = minVotes
+            });
         }
-
-
-
-
     }
 }
