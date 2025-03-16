@@ -85,9 +85,6 @@ namespace ImdbRandomMovie.Migrations
                     b.Property<string>("Genres")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<byte?>("IsAdult")
-                        .HasColumnType("tinyint");
-
                     b.Property<string>("OriginalTitle")
                         .HasColumnType("nvarchar(max)");
 
@@ -99,6 +96,9 @@ namespace ImdbRandomMovie.Migrations
 
                     b.Property<short?>("StartYear")
                         .HasColumnType("smallint");
+
+                    b.Property<int>("isAdult")
+                        .HasColumnType("int");
 
                     b.HasKey("Tconst");
 

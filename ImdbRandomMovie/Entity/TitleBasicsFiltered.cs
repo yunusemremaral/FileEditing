@@ -11,7 +11,7 @@ public partial class TitleBasicsFiltered
 
     public string? OriginalTitle { get; set; }
 
-    public byte? IsAdult { get; set; }
+    public int isAdult { get; set; }
 
     public short? StartYear { get; set; }
 

@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ImdbRandomMovie.Migrations
 {
     [DbContext(typeof(ImdbContext))]
-    [Migration("20250316132142_RemoveRelationships")]
-    partial class RemoveRelationships
+    [Migration("20250316134230_mig_2222")]
+    partial class mig_2222
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -88,9 +88,6 @@ namespace ImdbRandomMovie.Migrations
                     b.Property<string>("Genres")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<byte?>("IsAdult")
-                        .HasColumnType("tinyint");
-
                     b.Property<string>("OriginalTitle")
                         .HasColumnType("nvarchar(max)");
 
@@ -102,6 +99,9 @@ namespace ImdbRandomMovie.Migrations
 
                     b.Property<short?>("StartYear")
                         .HasColumnType("smallint");
+
+                    b.Property<int>("isAdult")
+                        .HasColumnType("int");
 
                     b.HasKey("Tconst");
 
