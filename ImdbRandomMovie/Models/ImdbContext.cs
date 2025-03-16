@@ -8,7 +8,6 @@ public class ImdbContext : DbContext
     {
     }
 
-    // DbSet'ler ve tablo eşlemeleri
     public virtual DbSet<NameBasicsFiltered> NameBasicsFiltereds { get; set; }
     public virtual DbSet<TitleAkasFiltered> TitleAkasFiltereds { get; set; }
     public virtual DbSet<TitleBasicsFiltered> TitleBasicsFiltereds { get; set; }
@@ -19,41 +18,18 @@ public class ImdbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        // Tablo isimlerini ve şemayı açıkça belirtiyoruz
-        modelBuilder.Entity<NameBasicsFiltered>(entity =>
-        {
-            entity.ToTable("name.basics.filtered", "dbo");
-            entity.HasKey(e => e.Nconst); // Primary key tanımı
-        });
+        // Tablo isimlerini açıkça belirtiyoruz
+        modelBuilder.Entity<NameBasicsFiltered>().ToTable("name.basics.filtered", "dbo");
+        modelBuilder.Entity<TitleAkasFiltered>().ToTable("title.akas.filtered", "dbo");
+        modelBuilder.Entity<TitleBasicsFiltered>().ToTable("title.basics.filtered", "dbo");
+        modelBuilder.Entity<TitleCrewFiltered>().ToTable("title.crew.filtered", "dbo");
+        modelBuilder.Entity<TitleRatingsFiltered>().ToTable("title.ratings.filtered", "dbo");
 
-        modelBuilder.Entity<TitleAkasFiltered>(entity =>
-        {
-            entity.ToTable("title.akas.filtered", "dbo");
-            entity.HasKey(e => new { e.Tconst, e.Ordering }); // Composite key
-        });
-
-        modelBuilder.Entity<TitleBasicsFiltered>(entity =>
-        {
-            entity.ToTable("title.basics.filtered", "dbo");
-            entity.HasKey(e => e.Tconst);
-        });
-
-        modelBuilder.Entity<TitleCrewFiltered>(entity =>
-        {
-            entity.ToTable("title.crew.filtered", "dbo");
-            entity.HasKey(e => e.Tconst);
-        });
-
-        modelBuilder.Entity<TitleRatingsFiltered>(entity =>
-        {
-            entity.ToTable("title.ratings.filtered", "dbo");
-            entity.HasKey(e => e.Tconst);
-        });
-
-        // İlişkileri tanımlıyoruz (Örnek: TitleBasicsFiltered ↔ TitleCrewFiltered)
-        modelBuilder.Entity<TitleBasicsFiltered>()
-            .HasOne(b => b.TitleCrewFiltered)
-            .WithOne(c => c.TconstNavigation)
-            .HasForeignKey<TitleCrewFiltered>(c => c.Tconst);
+        // Primary key tanımlamaları
+        modelBuilder.Entity<NameBasicsFiltered>().HasKey(e => e.Nconst);
+        modelBuilder.Entity<TitleAkasFiltered>().HasKey(e => new { e.Tconst, e.Ordering });
+        modelBuilder.Entity<TitleBasicsFiltered>().HasKey(e => e.Tconst);
+        modelBuilder.Entity<TitleCrewFiltered>().HasKey(e => e.Tconst);
+        modelBuilder.Entity<TitleRatingsFiltered>().HasKey(e => e.Tconst);
     }
 }

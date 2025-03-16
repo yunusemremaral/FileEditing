@@ -21,5 +21,4 @@ public partial class TitleAkasFiltered
 
     public bool? IsOriginalTitle { get; set; }
 
-    public virtual TitleBasicsFiltered TconstNavigation { get; set; } = null!;
 }

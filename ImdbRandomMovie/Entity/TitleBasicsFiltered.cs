@@ -19,5 +19,4 @@ public partial class TitleBasicsFiltered
 
     public string? Genres { get; set; }
 
-    public virtual TitleCrewFiltered? TitleCrewFiltered { get; set; }
 }

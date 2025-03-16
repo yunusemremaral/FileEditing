@@ -1,0 +1,14 @@
+﻿@model List<TitleRatingsFiltered>
+@{
+    ViewData["Title"] = "Movie";
+}
+
+@foreach(var item in Model)
+{
+    <tr>
+        <th>@item.Tconst</th>
+        <th>@item.AverageRating</th>
+        <th>@item.NumVotes</th>
+    </tr>
+}
+
