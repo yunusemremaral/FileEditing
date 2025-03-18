@@ -1,8 +1,11 @@
+using ImdbRandomMovie;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Veritabaný baðlamýný ekliyoruz
+builder.Services.AddDbContext<ImdbDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Servisleri ekliyoruz
 builder.Services.AddControllersWithViews();

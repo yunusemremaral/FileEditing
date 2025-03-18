@@ -1,0 +1,39 @@
+﻿@model IEnumerable<TitleBasicsFiltered>
+
+<h2>Title Basics Filtered</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>tconst</th>
+            <th>primaryTitle</th>
+            <th>originalTitle</th>
+            <th>isAdult</th>
+            <th>startYear</th>
+            <th>runtimeMinutes</th>
+            <th>genres</th>
+            <th>averageRating</th>
+            <th>numVotes</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Tconst</td>
+                <td>@item.PrimaryTitle</td>
+                <td>@item.OriginalTitle</td>
+                <td>@item.IsAdult</td>
+                <td>@item.StartYear</td>
+                <td>@item.RuntimeMinutes</td>
+                <td>@item.Genres</td>
+                <td>@item.AverageRating</td>
+                <td>@item.NumVotes</td>
+            </tr>
+        }
+    </tbody>
+</table>

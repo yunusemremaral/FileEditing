@@ -1,0 +1,55 @@
+﻿@model List<TitleBasicsFiltered>
+
+@{
+    ViewData["Title"] = "FindMovies";
+}
+
+
+
+<h2>Film Bul</h2>
+
+<div class="row">
+    <!-- Türlerin Listelendiği Sol Taraf -->
+    <div class="col-md-3">
+        <h4>Türler</h4>
+        <form id="genreForm" method="post" asp-action="FindMovies">
+            <div class="list-group">
+                @foreach (var genre in ViewBag.Genres)
+                {
+                    <label class="list-group-item">
+                        <input type="checkbox" name="selectedGenres" value="@genre" /> @genre
+                    </label>
+                }
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">Film Bul</button>
+        </form>
+    </div>
+
+    <!-- Filmlerin Listelendiği Sağ Taraf -->
+    <div class="col-md-9">
+        <h4>Filmler</h4>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>primaryTitle</th>
+                    <th>originalTitle</th>
+                    <th>startYear</th>
+                    <th>runtimeMinutes</th>
+                    <th>genres</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var movie in Model)
+                {
+                    <tr>
+                        <td>@movie.PrimaryTitle</td>
+                        <td>@movie.OriginalTitle</td>
+                        <td>@movie.StartYear</td>
+                        <td>@movie.RuntimeMinutes</td>
+                        <td>@movie.Genres</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
