@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ImdbRandomMovie.Entity;
+namespace ImdbRandomMovie;
 
 public partial class TitleCrewFiltered
 {
@@ -11,4 +11,5 @@ public partial class TitleCrewFiltered
 
     public string? Writers { get; set; }
 
+    public virtual TitleBasicsFiltered TconstNavigation { get; set; } = null!;
 }

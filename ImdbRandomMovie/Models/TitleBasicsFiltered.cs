@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ImdbRandomMovie.Entity;
+namespace ImdbRandomMovie;
 
 public partial class TitleBasicsFiltered
 {
@@ -11,7 +11,7 @@ public partial class TitleBasicsFiltered
 
     public string? OriginalTitle { get; set; }
 
-    public int isAdult { get; set; }
+    public byte? IsAdult { get; set; }
 
     public short? StartYear { get; set; }
 
@@ -19,4 +19,9 @@ public partial class TitleBasicsFiltered
 
     public string? Genres { get; set; }
 
+    public double? AverageRating { get; set; }
+
+    public int? NumVotes { get; set; }
+
+    public virtual TitleCrewFiltered? TitleCrewFiltered { get; set; }
 }

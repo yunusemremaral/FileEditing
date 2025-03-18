@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ImdbRandomMovie.Entity;
+namespace ImdbRandomMovie;
 
 public partial class NameBasicsFiltered
 {
