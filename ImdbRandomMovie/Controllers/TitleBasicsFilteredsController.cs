@@ -39,57 +39,60 @@ namespace ImdbRandomMovie.Controllers
             return View(titleBasicsFiltered);
         }
 
+        // GET: TitleBasicsFiltereds/FindMovies
         public async Task<IActionResult> FindMovies()
         {
-            // Veritabanındaki tüm türleri çek
-            var genres = new List<string>
-    {
-        "Action",
-        "Adventure",
-        "Animation",
-        "Biography",
-        "Comedy",
-        "Crime",
-        "Documentary",
-        "Drama",
-        "Family",
-        "Fantasy",
-        "History",
-        "Horror",
-        "Music",
-        "Musical",
-        "Mystery",
-        "Romance",
-        "Sci-Fi",
-        "Sport",
-        "Thriller",
-        "War",
-        "Western"
-    };
-
-
-            // Türleri ViewBag'e ekle
-            ViewBag.Genres = genres;
-
+            ViewBag.Genres = GetGenreList();
+            ViewBag.MinYear = 1900; // Default değerler
+            ViewBag.MaxYear = 2024;
             return View(new List<TitleBasicsFiltered>());
         }
+
+        // POST: TitleBasicsFiltereds/FindMovies
         [HttpPost]
-        public async Task<IActionResult> FindMovies(List<string> selectedGenres)
+        public async Task<IActionResult> FindMovies(
+            List<string> selectedGenres,
+            int minYear = 1900,  // Default değerleri ayarla
+            int maxYear = 2024)
         {
-            // Max 3 seçim kontrolü
+            // Yıl sınır kontrolleri
+            minYear = Math.Clamp(minYear, 1800, 2050);
+            maxYear = Math.Clamp(maxYear, minYear, 2050);
+            // Validasyonlar
             if (selectedGenres?.Count > 3)
             {
                 ModelState.AddModelError("", "En fazla 3 tür seçebilirsiniz");
-                ViewBag.Genres = GetGenreList();
-                return View(new List<TitleBasicsFiltered>());
+                return await ReloadForm(selectedGenres, minYear, maxYear);
             }
 
-            var movies = await _context.TitleBasicsFiltereds
-                .Where(m => selectedGenres.All(genre => m.Genres.Contains(genre)))
-                .ToListAsync();
+            // Sorgu oluşturma
+            var query = _context.TitleBasicsFiltereds.AsQueryable();
 
+            // Tür Filtresi
+            if (selectedGenres != null && selectedGenres.Any())
+            {
+                query = query.Where(m => selectedGenres.All(genre => m.Genres.Contains(genre)));
+            }
+
+            // Yıl Filtresi
+            query = query.Where(m => m.StartYear >= minYear && m.StartYear <= maxYear);
+
+            var movies = await query.ToListAsync();
+
+            return await ReloadForm(selectedGenres, minYear, maxYear, movies);
+        }
+
+        private async Task<IActionResult> ReloadForm(
+            List<string> selectedGenres,
+            int minYear,
+            int maxYear,
+            List<TitleBasicsFiltered> movies = null)
+        {
             ViewBag.Genres = GetGenreList();
-            return View(movies);
+            ViewBag.MinYear = minYear;
+            ViewBag.MaxYear = maxYear;
+            ViewBag.SelectedGenres = selectedGenres ?? new List<string>();
+            return View(movies ?? new List<TitleBasicsFiltered>());
         }
 
         private List<string> GetGenreList()
@@ -102,7 +105,6 @@ namespace ImdbRandomMovie.Controllers
             "Romance", "Sci-Fi", "Sport", "Thriller", "War", "Western"
         };
         }
-
 
     }
 

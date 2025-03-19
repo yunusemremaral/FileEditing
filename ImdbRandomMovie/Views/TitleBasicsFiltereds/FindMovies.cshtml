@@ -75,34 +75,45 @@
     <div class="col-md-3">
         <div class="card shadow-sm">
             <div class="card-header bg-secondary text-white">
-                <h5 class="mb-0">⚙️ Ekstra Filtreler</h5>
+                <h5 class="mb-0">⚙️ Yıl Filtresi</h5>
             </div>
             <div class="card-body">
-                <div class="mb-3">
-                    <label class="form-label">Yıl Aralığı</label>
-                    <input type="range" class="form-range" min="1900" max="2024" step="1">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">IMDb Puanı</label>
-                    <select class="form-select">
-                        <option>70</option>
-                        <option>80</option>
-                        <option>90</option>
-                    </select>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="oscarCheck">
-                    <label class="form-check-label" for="oscarCheck">
-                        Oscar Ödüllü
+                <div class="mb-4">
+                    <label class="form-label">
+                        Yıl Aralığı:
+                        <span id="minYearValue">@(ViewBag.MinYear ?? 1800)</span> -
+                        <span id="maxYearValue">@(ViewBag.MaxYear ?? 2024)</span>
                     </label>
+                    <div id="yearRangeSlider" class="slider-range"></div>
+                    <input type="hidden" id="minYear" name="minYear" value="@(ViewBag.MinYear ?? 1800)">
+                    <input type="hidden" id="maxYear" name="maxYear" value="@(ViewBag.MaxYear ?? 2024)">
                 </div>
             </div>
         </div>
     </div>
+
 </div>
 
 @section Scripts {
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+
     <script>
+
+        $(function() {
+            // Çift kollu yıl slider'ı
+                    $("#yearRangeSlider").slider({
+            range: true,
+            min: 1800,
+            max: 2050,
+            values: [@(ViewBag.MinYear), @(ViewBag.MaxYear)], // Null kontrolü ekleyin
+            slide: function(event, ui) {
+                // Değerleri clamp'le
+                ui.values[0] = Math.max(ui.values[0], 1800);
+                ui.values[1] = Math.min(ui.values[1], 2050);
+                // Diğer kodlar
+            }
+        });
+        });
         // Max 3 Seçim Kontrolü
         document.querySelectorAll('input[name="selectedGenres"]').forEach(checkbox => {
             checkbox.addEventListener('change', function() {
@@ -181,4 +192,25 @@
     .card-header {
         border-radius: 0.5rem 0.5rem 0 0 !important;
     }
+
+    .ui-slider {
+        height: 6px;
+        background: #ddd;
+        margin: 15px 0;
+    }
+
+    .ui-slider-handle {
+        height: 16px;
+        width: 16px;
+        background: #0d6efd;
+        border: none;
+        top: -5px;
+        margin-left: -8px;
+    }
+
+    .ui-slider-range {
+        background: #0d6efd;
+        height: 6px;
+    }
+
 </style>
