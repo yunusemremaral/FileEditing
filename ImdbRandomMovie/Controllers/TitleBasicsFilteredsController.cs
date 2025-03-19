@@ -67,6 +67,7 @@ namespace ImdbRandomMovie.Controllers
         "Western"
     };
 
+
             // Türleri ViewBag'e ekle
             ViewBag.Genres = genres;
 
@@ -75,38 +76,31 @@ namespace ImdbRandomMovie.Controllers
         [HttpPost]
         public async Task<IActionResult> FindMovies(List<string> selectedGenres)
         {
-            // Seçilen türlere göre filmleri filtrele
+            // Max 3 seçim kontrolü
+            if (selectedGenres?.Count > 3)
+            {
+                ModelState.AddModelError("", "En fazla 3 tür seçebilirsiniz");
+                ViewBag.Genres = GetGenreList();
+                return View(new List<TitleBasicsFiltered>());
+            }
+
             var movies = await _context.TitleBasicsFiltereds
                 .Where(m => selectedGenres.All(genre => m.Genres.Contains(genre)))
                 .ToListAsync();
 
-            // Türleri ViewBag'e ekle (formun tekrar render edilmesi için)
-            ViewBag.Genres = new List<string>
-    {
-        "Action",
-        "Adventure",
-        "Animation",
-        "Biography",
-        "Comedy",
-        "Crime",
-        "Documentary",
-        "Drama",
-        "Family",
-        "Fantasy",
-        "History",
-        "Horror",
-        "Music",
-        "Musical",
-        "Mystery",
-        "Romance",
-        "Sci-Fi",
-        "Sport",
-        "Thriller",
-        "War",
-        "Western"
-    };
-
+            ViewBag.Genres = GetGenreList();
             return View(movies);
+        }
+
+        private List<string> GetGenreList()
+        {
+            return new List<string>
+        {
+            "Action", "Adventure", "Animation", "Biography", "Comedy",
+            "Crime", "Documentary", "Drama", "Family", "Fantasy",
+            "History", "Horror", "Music", "Musical", "Mystery",
+            "Romance", "Sci-Fi", "Sport", "Thriller", "War", "Western"
+        };
         }
 
 
