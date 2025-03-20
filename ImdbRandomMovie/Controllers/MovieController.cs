@@ -26,8 +26,8 @@ namespace ImdbRandomMovie.Controllers
         public async Task<IActionResult> FindMovies()
         {
             ViewBag.Genres = GetGenreList();
-            ViewBag.MinYear = 1900; // Default değerler
-            ViewBag.MaxYear = 2024;
+            ViewBag.MinYear = 1894; // Default değerler
+            ViewBag.MaxYear = 2025;
             return View(new List<TitleBasicsFiltered>());
         }
 
@@ -36,11 +36,11 @@ namespace ImdbRandomMovie.Controllers
         public async Task<IActionResult> FindMovies(
             List<string> selectedGenres,
             int minYear ,  // Default değerleri ayarla
-            int maxYear )
+            int maxYear)
         {
             // Yıl sınır kontrolleri
-            minYear = Math.Clamp(minYear, 1800, 2050);
-            maxYear = Math.Clamp(maxYear, minYear, 2050);
+            minYear = Math.Clamp(minYear, 1894, 2025);
+            maxYear = Math.Clamp(maxYear, minYear, 2025);
             // Validasyonlar
             if (selectedGenres?.Count > 3)
             {

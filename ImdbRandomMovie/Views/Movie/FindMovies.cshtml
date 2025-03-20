@@ -58,7 +58,7 @@
                                     </div>
                                     <div class="badge bg-warning text-dark mb-2">@movie.Genres</div>
                                     <div class="d-flex justify-content-between small">
-                                        <span>⭐ @movie.AverageRating/10</span>
+                                        <span>⭐ @(movie.AverageRating/10)/10</span>
                                         <span>🗳️ @movie.NumVotes oy</span>
                                     </div>
                                 </div>
@@ -80,12 +80,12 @@
                 <div class="mb-4">
                     <label class="form-label">
                         Yıl Aralığı:
-                        <span id="minYearValue">@(ViewBag.MinYear ?? 1800)</span> -
-                        <span id="maxYearValue">@(ViewBag.MaxYear ?? 2024)</span>
+                        <span id="minYearValue">@(ViewBag.MinYear ?? 1894)</span> -
+                        <span id="maxYearValue">@(ViewBag.MaxYear ?? 2025)</span>
                     </label>
                     <div id="yearRangeSlider" class="slider-range"></div>
-                    <input type="hidden" id="minYear" name="minYear" value="@(ViewBag.MinYear ?? 1800)">
-                    <input type="hidden" id="maxYear" name="maxYear" value="@(ViewBag.MaxYear ?? 2024)">
+                    <input type="hidden" id="minYear" name="minYear" value="@(ViewBag.MinYear ?? 1894)">
+                    <input type="hidden" id="maxYear" name="maxYear" value="@(ViewBag.MaxYear ?? 2025)">
                 </div>
             </div>
         </div>
@@ -104,8 +104,8 @@
             // Çift kollu yıl slider'ı
                       $("#yearRangeSlider").slider({
             range: true,
-            min: 1800,
-            max: 2050,
+            min: 1894,
+            max: 2025,
             values: [@(ViewBag.MinYear), @(ViewBag.MaxYear)],
             slide: function(event, ui) {
                 // Seçilen değerleri ilgili alanlara aktar
