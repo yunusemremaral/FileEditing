@@ -82,13 +82,60 @@
                         Yıl Aralığı:
                         <span id="minYearValue">@(ViewBag.MinYear ?? 1894)</span> -
                         <span id="maxYearValue">@(ViewBag.MaxYear ?? 2025)</span>
-                    </label>
+                    </label>    
                     <div id="yearRangeSlider" class="slider-range"></div>
                     <input type="hidden" id="minYear" name="minYear" value="@(ViewBag.MinYear ?? 1894)">
                     <input type="hidden" id="maxYear" name="maxYear" value="@(ViewBag.MaxYear ?? 2025)">
                 </div>
             </div>
         </div>
+
+            <!-- IMDb Puanı Filtresi -->
+            <div class="card shadow-sm mb-3">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">⭐ IMDb Puanı</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <label class="form-label">
+                            Puan Aralığı:
+                            <span id="minRatingValue">@(ViewBag.MinRating ?? 0.1)</span> -
+                            <span id="maxRatingValue">@(ViewBag.MaxRating ?? 9.9)</span>
+                        </label>
+                        <div id="ratingRangeSlider" class="slider-range"></div>
+                        <input type="hidden" id="minRating" name="minRating" value="@(ViewBag.MinRating ?? 0.1)">
+                        <input type="hidden" id="maxRating" name="maxRating" value="@(ViewBag.MaxRating ?? 9.9)">
+                    </div>
+                </div>
+            </div>
+
+            <!-- NUM VOTES Filtresi -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">🗳️ Oy Sayısı</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-2">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="votesFilter" id="votesAll" value="all" checked>
+                            <label class="form-check-label" for="votesAll">0 ve üzeri</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="votesFilter" id="votesLow" value="low">
+                            <label class="form-check-label" for="votesLow">0 - 1000</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="votesFilter" id="votesMedium" value="medium">
+                            <label class="form-check-label" for="votesMedium">1000 - 10000</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="votesFilter" id="votesHigh" value="high">
+                            <label class="form-check-label" for="votesHigh">10000 ve üzeri</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
     </div>
 
 </div>
@@ -115,6 +162,20 @@
                 $("#maxYear").val(ui.values[1]);
             }
         });
+        // Çift kollu IMDb Puanı Slider'ı (0.1 - 9.9 arası, 0.1 artışlı)
+            $("#ratingRangeSlider").slider({
+                range: true,
+                min: 0.1,
+                max: 9.9,
+                step: 0.1,
+                values: [@(ViewBag.MinRating ?? 0.1), @(ViewBag.MaxRating ?? 9.9)],
+                slide: function(event, ui) {
+                    $("#minRatingValue").text(ui.values[0]);
+                    $("#maxRatingValue").text(ui.values[1]);
+                    $("#minRating").val(ui.values[0]);
+                    $("#maxRating").val(ui.values[1]);
+                }
+            });
 
         });
         // Max 3 Seçim Kontrolü
