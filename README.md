@@ -1,3 +1,4 @@
 Düzenlemeler yapılıyor . 
 
-![Ekran Alıntısı](https://github.com/user-attachments/assets/434beefb-70de-42e1-a8e9-ea8302828d0a)
+![image](https://github.com/user-attachments/assets/2915141c-ac22-4896-bd6c-0376b9b938c2)
+
