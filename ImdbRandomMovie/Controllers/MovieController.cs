@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace ImdbRandomMovie.Controllers
 {
@@ -29,8 +30,8 @@ namespace ImdbRandomMovie.Controllers
             // Varsayılan filtre değerleri
             ViewBag.MinYear = 1894;
             ViewBag.MaxYear = 2025;
-            ViewBag.MinRating = 0.1;
-            ViewBag.MaxRating = 9.9;
+            ViewBag.MinRating = "0.1"; // 👈 String olarak ata
+            ViewBag.MaxRating = "9.9";
             ViewBag.VotesFilter = "all"; // Oy filtresinde varsayılan: tümü (0 ve üzeri)
             return View(new List<TitleBasicsFiltered>());
         }
@@ -41,10 +42,14 @@ namespace ImdbRandomMovie.Controllers
             List<string> selectedGenres,
             int minYear,
             int maxYear,
-            double minRating,
-            double maxRating,
+    [FromForm(Name = "minRating")] string minRatingStr,
+    [FromForm(Name = "maxRating")] string maxRatingStr,
             string votesFilter)
         {
+            double minRating =10* double.Parse(minRatingStr, CultureInfo.InvariantCulture);
+            double maxRating =10* double.Parse(maxRatingStr, CultureInfo.InvariantCulture);
+
+
             // Yıl sınır kontrolleri
             minYear = Math.Clamp(minYear, 1894, 2025);
             maxYear = Math.Clamp(maxYear, minYear, 2025);
@@ -105,8 +110,8 @@ namespace ImdbRandomMovie.Controllers
             ViewBag.Genres = GetGenreList();
             ViewBag.MinYear = minYear;
             ViewBag.MaxYear = maxYear;
-            ViewBag.MinRating = minRating;
-            ViewBag.MaxRating = maxRating;
+            ViewBag.MinRating = minRating.ToString("0.0", CultureInfo.InvariantCulture); // 👈 Double → String
+            ViewBag.MaxRating = maxRating.ToString("0.0", CultureInfo.InvariantCulture);
             ViewBag.VotesFilter = votesFilter;
             ViewBag.SelectedGenres = selectedGenres ?? new List<string>();
             return View(movies ?? new List<TitleBasicsFiltered>());

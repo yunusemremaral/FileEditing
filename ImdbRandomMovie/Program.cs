@@ -1,7 +1,12 @@
 using ImdbRandomMovie;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.Configure<RequestLocalizationOptions>(options => {
+    options.DefaultRequestCulture = new RequestCulture("en-US");
+});
 
 // Veritabaný baðlamýný ekliyoruz
 builder.Services.AddDbContext<ImdbDbContext>(options =>

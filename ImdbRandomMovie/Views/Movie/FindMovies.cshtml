@@ -1,6 +1,8 @@
-﻿@model List<TitleBasicsFiltered>
+﻿@using System.Globalization
+@model List<TitleBasicsFiltered>
 
 @{
+
     ViewData["Title"] = "FindMovies";
 }
 
@@ -103,8 +105,10 @@
                             <span id="maxRatingValue">@(ViewBag.MaxRating ?? 9.9)</span>
                         </label>
                         <div id="ratingRangeSlider" class="slider-range"></div>
-                        <input type="hidden" id="minRating" name="minRating" value="@(ViewBag.MinRating ?? 0.1)">
-                        <input type="hidden" id="maxRating" name="maxRating" value="@(ViewBag.MaxRating ?? 9.9)">
+                        <input type="hidden" id="minRating" name="minRating"
+                               value="@(ViewBag.MinRating?.Replace(",", ".") ?? "0.1")"> <!-- 👈 Replace artık çalışacak -->
+                        <input type="hidden" id="maxRating" name="maxRating"
+                               value="@(ViewBag.MaxRating?.Replace(",", ".") ?? "9.9")">
                     </div>
                 </div>
             </div>
@@ -163,19 +167,24 @@
             }
         });
         // Çift kollu IMDb Puanı Slider'ı (0.1 - 9.9 arası, 0.1 artışlı)
-            $("#ratingRangeSlider").slider({
-                range: true,
-                min: 0.1,
-                max: 9.9,
-                step: 0.1,
-                values: [@(ViewBag.MinRating ?? 0.1), @(ViewBag.MaxRating ?? 9.9)],
-                slide: function(event, ui) {
-                    $("#minRatingValue").text(ui.values[0]);
-                    $("#maxRatingValue").text(ui.values[1]);
-                    $("#minRating").val(ui.values[0]);
-                    $("#maxRating").val(ui.values[1]);
-                }
-            });
+               // IMDb Puanı Slider'ı (DÜZELTİLMİŞ KISIM)
+        $("#ratingRangeSlider").slider({
+            range: true,
+            min: 0.1,
+            max: 9.9,
+            step: 0.1,
+            values: [parseFloat('@ViewBag.MinRating'.replace(',', '.')), // 👈 Virgülleri noktaya çevir
+                     parseFloat('@ViewBag.MaxRating'.replace(',', '.'))],
+            slide: function(event, ui) {
+                const minVal = ui.values[0].toFixed(1);
+                const maxVal = ui.values[1].toFixed(1);
+                $("#minRatingValue").text(minVal);
+                $("#maxRatingValue").text(maxVal);
+                $("#minRating").val(minVal);
+                $("#maxRating").val(maxVal);
+            }
+        });
+
 
         });
         // Max 3 Seçim Kontrolü
