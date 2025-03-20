@@ -5,6 +5,7 @@
 }
 
 <h2 class="mb-4">🎬 Film Keşfet</h2>
+<form id="genreForm" method="post" asp-action="FindMovies">
 
 <div class="row">
     <!-- SOL SÜTUN - Türler -->
@@ -14,7 +15,6 @@
                 <h5 class="mb-0">🔍 Türler (Max 3 Seçim)</h5>
             </div>
             <div class="card-body">
-                <form id="genreForm" method="post" asp-action="FindMovies">
                     <div class="d-flex justify-content-between mb-3">
                         <button type="button" id="randomSelect" class="btn btn-sm btn-outline-danger">🎲 Random Seç</button>
                         <button type="submit" class="btn btn-sm btn-success">Ara</button>
@@ -34,7 +34,6 @@
                             </div>
                         }
                     </div>
-                </form>
             </div>
         </div>
     </div>
@@ -93,6 +92,8 @@
     </div>
 
 </div>
+</form>
+
 
 @section Scripts {
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
@@ -101,18 +102,20 @@
 
         $(function() {
             // Çift kollu yıl slider'ı
-                    $("#yearRangeSlider").slider({
+                      $("#yearRangeSlider").slider({
             range: true,
             min: 1800,
             max: 2050,
-            values: [@(ViewBag.MinYear), @(ViewBag.MaxYear)], // Null kontrolü ekleyin
+            values: [@(ViewBag.MinYear), @(ViewBag.MaxYear)],
             slide: function(event, ui) {
-                // Değerleri clamp'le
-                ui.values[0] = Math.max(ui.values[0], 1800);
-                ui.values[1] = Math.min(ui.values[1], 2050);
-                // Diğer kodlar
+                // Seçilen değerleri ilgili alanlara aktar
+                $("#minYearValue").text(ui.values[0]);
+                $("#maxYearValue").text(ui.values[1]);
+                $("#minYear").val(ui.values[0]);
+                $("#maxYear").val(ui.values[1]);
             }
         });
+
         });
         // Max 3 Seçim Kontrolü
         document.querySelectorAll('input[name="selectedGenres"]').forEach(checkbox => {

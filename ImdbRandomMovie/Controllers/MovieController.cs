@@ -3,11 +3,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ImdbRandomMovie.Controllers
 {
-    public class TitleBasicsFilteredsController : Controller
+    public class MovieController : Controller
     {
         private readonly ImdbDbContext _context;
 
-        public TitleBasicsFilteredsController(ImdbDbContext context)
+        public MovieController(ImdbDbContext context)
         {
             _context = context;
         }
@@ -20,24 +20,7 @@ namespace ImdbRandomMovie.Controllers
         }
 
         // GET: TitleBasicsFiltereds/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: TitleBasicsFiltereds/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(TitleBasicsFiltered titleBasicsFiltered)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(titleBasicsFiltered);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(titleBasicsFiltered);
-        }
+        
 
         // GET: TitleBasicsFiltereds/FindMovies
         public async Task<IActionResult> FindMovies()
@@ -52,8 +35,8 @@ namespace ImdbRandomMovie.Controllers
         [HttpPost]
         public async Task<IActionResult> FindMovies(
             List<string> selectedGenres,
-            int minYear = 1900,  // Default değerleri ayarla
-            int maxYear = 2024)
+            int minYear ,  // Default değerleri ayarla
+            int maxYear )
         {
             // Yıl sınır kontrolleri
             minYear = Math.Clamp(minYear, 1800, 2050);
