@@ -30,9 +30,9 @@ namespace ImdbRandomMovie.Controllers
             // Varsayılan filtre değerleri
             ViewBag.MinYear = 1894;
             ViewBag.MaxYear = 2025;
-            ViewBag.MinRating = "0.1"; // 👈 String olarak ata
-            ViewBag.MaxRating = "9.9";
-            ViewBag.VotesFilter = "all"; // Oy filtresinde varsayılan: tümü (0 ve üzeri)
+            ViewBag.MinRating = "0";     // 0'dan başla
+            ViewBag.MaxRating = "100";   // 100'e kadar
+            ViewBag.VotesFilter = "all";
             return View(new List<TitleBasicsFiltered>());
         }
 
@@ -42,13 +42,13 @@ namespace ImdbRandomMovie.Controllers
             List<string> selectedGenres,
             int minYear,
             int maxYear,
-    [FromForm(Name = "minRating")] string minRatingStr,
-    [FromForm(Name = "maxRating")] string maxRatingStr,
+            [FromForm(Name = "minRating")] string minRatingStr,
+            [FromForm(Name = "maxRating")] string maxRatingStr,
             string votesFilter)
         {
-            double minRating =10* double.Parse(minRatingStr, CultureInfo.InvariantCulture);
-            double maxRating =10* double.Parse(maxRatingStr, CultureInfo.InvariantCulture);
-
+            // Direk 0-100 arası değerleri alıyoruz.
+            double minRating = double.Parse(minRatingStr, CultureInfo.InvariantCulture);
+            double maxRating = double.Parse(maxRatingStr, CultureInfo.InvariantCulture);
 
             // Yıl sınır kontrolleri
             minYear = Math.Clamp(minYear, 1894, 2025);
@@ -89,12 +89,11 @@ namespace ImdbRandomMovie.Controllers
                     query = query.Where(m => m.NumVotes >= 10000);
                     break;
                 default:
-                    // "all" seçiliyse ek filtre yok
                     break;
             }
+            query = query.OrderBy(m => Guid.NewGuid()).Take(10);
 
             var movies = await query.ToListAsync();
-
             return await ReloadForm(selectedGenres, minYear, maxYear, minRating, maxRating, votesFilter, movies);
         }
 
@@ -110,8 +109,8 @@ namespace ImdbRandomMovie.Controllers
             ViewBag.Genres = GetGenreList();
             ViewBag.MinYear = minYear;
             ViewBag.MaxYear = maxYear;
-            ViewBag.MinRating = minRating.ToString("0.0", CultureInfo.InvariantCulture); // 👈 Double → String
-            ViewBag.MaxRating = maxRating.ToString("0.0", CultureInfo.InvariantCulture);
+            ViewBag.MinRating = minRating.ToString("0", CultureInfo.InvariantCulture);
+            ViewBag.MaxRating = maxRating.ToString("0", CultureInfo.InvariantCulture);
             ViewBag.VotesFilter = votesFilter;
             ViewBag.SelectedGenres = selectedGenres ?? new List<string>();
             return View(movies ?? new List<TitleBasicsFiltered>());

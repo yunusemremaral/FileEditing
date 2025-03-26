@@ -2,95 +2,101 @@
 @model List<TitleBasicsFiltered>
 
 @{
-
     ViewData["Title"] = "FindMovies";
 }
 
 <h2 class="mb-4">🎬 Film Keşfet</h2>
 <form id="genreForm" method="post" asp-action="FindMovies">
+    <!-- Üst Kısımda Tam Satırı Kapsayan Ara Butonu -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <button type="submit" class="btn btn-success btn-lg w-100">Ara</button>
 
-<div class="row">
-    <!-- SOL SÜTUN - Türler -->
-    <div class="col-md-3">
-        <div class="card shadow-sm">
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">🔍 Türler (Max 3 Seçim)</h5>
-            </div>
-            <div class="card-body">
-                    <div class="d-flex justify-content-between mb-3">
-                        <button type="button" id="randomSelect" class="btn btn-sm btn-outline-danger">🎲 Random Seç</button>
-                        <button type="submit" class="btn btn-sm btn-success">Ara</button>
-                    </div>
+        </div>
+    </div>
 
+
+
+    <div class="row">
+        <!-- SOL SÜTUN - Türler -->
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">🔍 Türler (Max 3 Seçim)</h5>
+                </div>
+                <div class="d-flex justify-content-between align-items-center px-3 mt-3">
+                    <button type="button" id="resetButton" class="btn btn-secondary btn-sm">Sıfırla</button>
+                    <button type="button" id="randomSelect" class="btn btn-outline-danger btn-sm">🎲 Random Seç</button>
+                </div>
+                <div class="card-body">
                     <div class="row g-2" id="genreContainer">
-                        @foreach (var genre in ViewBag.Genres)
+                        @foreach (var genre in ViewBag.Genres as List<string>)
                         {
+                            var isChecked = (ViewBag.SelectedGenres as List<string>)?.Contains(genre) ?? false;
                             <div class="col-6 col-md-12 col-lg-6">
                                 <div class="form-check hover-effect genre-item">
                                     <input class="form-check-input" type="checkbox" name="selectedGenres"
-                                           value="@genre" id="@genre" max-selections="3">
-                                    <label class="form-check-label" for="@genre">
-                                        @genre
-                                    </label>
+                                           value="@genre" id="@genre" max-selections="3" @(isChecked ? "checked" : "")>
+                                    <label class="form-check-label" for="@genre">@genre</label>
                                 </div>
                             </div>
                         }
                     </div>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- ORTA SÜTUN - Filmler -->
-    <div class="col-md-6">
-        <div class="card shadow-sm">
-            <div class="card-header bg-info text-white">
-                <h5 class="mb-0">🎥 Bulunan Filmler (@Model.Count)</h5>
-            </div>
-            <div class="card-body">
-                <div class="row row-cols-1 row-cols-md-2 g-4">
-                    @foreach (var movie in Model)
-                    {
-                        <div class="col">
-                            <div class="card h-100 hover-scale">
-                                <div class="card-body">
-                                    <h6 class="card-title text-primary">@movie.PrimaryTitle</h6>
-                                    <div class="d-flex justify-content-between small mb-2">
-                                        <span>📅 @movie.StartYear</span>
-                                        <span>⏳ @movie.RuntimeMinutes dk</span>
-                                    </div>
-                                    <div class="badge bg-warning text-dark mb-2">@movie.Genres</div>
-                                    <div class="d-flex justify-content-between small">
-                                        <span>⭐ @(movie.AverageRating/10)/10</span>
-                                        <span>🗳️ @movie.NumVotes oy</span>
+        <!-- ORTA SÜTUN - Filmler -->
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">🎥 Bulunan Filmler (@Model.Count)</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row row-cols-1 row-cols-md-2 g-4">
+                        @foreach (var movie in Model)
+                        {
+                            <div class="col">
+                                <div class="card h-100 hover-scale">
+                                    <div class="card-body">
+                                        <h6 class="card-title text-primary">@movie.PrimaryTitle</h6>
+                                        <div class="d-flex justify-content-between small mb-2">
+                                            <span>📅 @movie.StartYear</span>
+                                            <span>⏳ @movie.RuntimeMinutes dk</span>
+                                        </div>
+                                        <div class="badge bg-warning text-dark mb-2">@movie.Genres</div>
+                                        <div class="d-flex justify-content-between small">
+                                            <span>⭐ @(movie.AverageRating)/100</span>
+                                            <span>🗳️ @movie.NumVotes oy</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    }
+                        }
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- SAĞ SÜTUN - Filtreler -->
-    <div class="col-md-3">
-        <div class="card shadow-sm">
-            <div class="card-header bg-secondary text-white">
-                <h5 class="mb-0">⚙️ Yıl Filtresi</h5>
-            </div>
-            <div class="card-body">
-                <div class="mb-4">
-                    <label class="form-label">
-                        Yıl Aralığı:
-                        <span id="minYearValue">@(ViewBag.MinYear ?? 1894)</span> -
-                        <span id="maxYearValue">@(ViewBag.MaxYear ?? 2025)</span>
-                    </label>    
-                    <div id="yearRangeSlider" class="slider-range"></div>
-                    <input type="hidden" id="minYear" name="minYear" value="@(ViewBag.MinYear ?? 1894)">
-                    <input type="hidden" id="maxYear" name="maxYear" value="@(ViewBag.MaxYear ?? 2025)">
+        <!-- SAĞ SÜTUN - Filtreler -->
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">⚙️ Yıl Filtresi</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <label class="form-label">
+                            Yıl Aralığı:
+                            <span id="minYearValue">@(ViewBag.MinYear ?? 1894)</span> -
+                            <span id="maxYearValue">@(ViewBag.MaxYear ?? 2025)</span>
+                        </label>
+                        <div id="yearRangeSlider" class="slider-range"></div>
+                        <input type="hidden" id="minYear" name="minYear" value="@(ViewBag.MinYear ?? 1894)">
+                        <input type="hidden" id="maxYear" name="maxYear" value="@(ViewBag.MaxYear ?? 2025)">
+                    </div>
                 </div>
             </div>
-        </div>
 
             <!-- IMDb Puanı Filtresi -->
             <div class="card shadow-sm mb-3">
@@ -101,14 +107,14 @@
                     <div class="mb-4">
                         <label class="form-label">
                             Puan Aralığı:
-                            <span id="minRatingValue">@(ViewBag.MinRating ?? 0.1)</span> -
-                            <span id="maxRatingValue">@(ViewBag.MaxRating ?? 9.9)</span>
+                            <span id="minRatingValue">@(ViewBag.MinRating ?? "0")</span> -
+                            <span id="maxRatingValue">@(ViewBag.MaxRating ?? "100")</span>
                         </label>
                         <div id="ratingRangeSlider" class="slider-range"></div>
                         <input type="hidden" id="minRating" name="minRating"
-                               value="@(ViewBag.MinRating?.Replace(",", ".") ?? "0.1")"> <!-- 👈 Replace artık çalışacak -->
+                               value="@(ViewBag.MinRating?.Replace(",", ".") ?? "0")">
                         <input type="hidden" id="maxRating" name="maxRating"
-                               value="@(ViewBag.MaxRating?.Replace(",", ".") ?? "9.9")">
+                               value="@(ViewBag.MaxRating?.Replace(",", ".") ?? "100")">
                     </div>
                 </div>
             </div>
@@ -121,73 +127,67 @@
                 <div class="card-body">
                     <div class="mb-2">
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="votesFilter" id="votesAll" value="all" checked>
+                            <input class="form-check-input" type="radio" name="votesFilter" id="votesAll" value="all" @((ViewBag.VotesFilter as string) == "all" ? "checked" : "")>
                             <label class="form-check-label" for="votesAll">0 ve üzeri</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="votesFilter" id="votesLow" value="low">
+                            <input class="form-check-input" type="radio" name="votesFilter" id="votesLow" value="low" @((ViewBag.VotesFilter as string) == "low" ? "checked" : "")>
                             <label class="form-check-label" for="votesLow">0 - 1000</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="votesFilter" id="votesMedium" value="medium">
+                            <input class="form-check-input" type="radio" name="votesFilter" id="votesMedium" value="medium" @((ViewBag.VotesFilter as string) == "medium" ? "checked" : "")>
                             <label class="form-check-label" for="votesMedium">1000 - 10000</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="votesFilter" id="votesHigh" value="high">
+                            <input class="form-check-input" type="radio" name="votesFilter" id="votesHigh" value="high" @((ViewBag.VotesFilter as string) == "high" ? "checked" : "")>
                             <label class="form-check-label" for="votesHigh">10000 ve üzeri</label>
                         </div>
                     </div>
                 </div>
             </div>
 
+        </div>
     </div>
-
-</div>
 </form>
-
 
 @section Scripts {
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
-
     <script>
-
         $(function() {
-            // Çift kollu yıl slider'ı
-                      $("#yearRangeSlider").slider({
-            range: true,
-            min: 1894,
-            max: 2025,
-            values: [@(ViewBag.MinYear), @(ViewBag.MaxYear)],
-            slide: function(event, ui) {
-                // Seçilen değerleri ilgili alanlara aktar
-                $("#minYearValue").text(ui.values[0]);
-                $("#maxYearValue").text(ui.values[1]);
-                $("#minYear").val(ui.values[0]);
-                $("#maxYear").val(ui.values[1]);
-            }
-        });
-        // Çift kollu IMDb Puanı Slider'ı (0.1 - 9.9 arası, 0.1 artışlı)
-               // IMDb Puanı Slider'ı (DÜZELTİLMİŞ KISIM)
-        $("#ratingRangeSlider").slider({
-            range: true,
-            min: 0.1,
-            max: 9.9,
-            step: 0.1,
-            values: [parseFloat('@ViewBag.MinRating'.replace(',', '.')), // 👈 Virgülleri noktaya çevir
-                     parseFloat('@ViewBag.MaxRating'.replace(',', '.'))],
-            slide: function(event, ui) {
-                const minVal = ui.values[0].toFixed(1);
-                const maxVal = ui.values[1].toFixed(1);
-                $("#minRatingValue").text(minVal);
-                $("#maxRatingValue").text(maxVal);
-                $("#minRating").val(minVal);
-                $("#maxRating").val(maxVal);
-            }
+            // Yıl slider'ı
+            $("#yearRangeSlider").slider({
+                range: true,
+                min: 1894,
+                max: 2025,
+                values: [@(ViewBag.MinYear), @(ViewBag.MaxYear)],
+                slide: function(event, ui) {
+                    $("#minYearValue").text(ui.values[0]);
+                    $("#maxYearValue").text(ui.values[1]);
+                    $("#minYear").val(ui.values[0]);
+                    $("#maxYear").val(ui.values[1]);
+                }
+            });
+
+            // IMDb Puanı slider'ı (0-100, adım: 1)
+            $("#ratingRangeSlider").slider({
+                range: true,
+                min: 0,
+                max: 100,
+                step: 1,
+                values: [
+                    parseFloat('@ViewBag.MinRating'.replace(',', '.')),
+                    parseFloat('@ViewBag.MaxRating'.replace(',', '.'))
+                ],
+                slide: function(event, ui) {
+                    $("#minRatingValue").text(ui.values[0]);
+                    $("#maxRatingValue").text(ui.values[1]);
+                    $("#minRating").val(ui.values[0]);
+                    $("#maxRating").val(ui.values[1]);
+                }
+            });
         });
 
-
-        });
-        // Max 3 Seçim Kontrolü
+        // Max 3 seçim kontrolü
         document.querySelectorAll('input[name="selectedGenres"]').forEach(checkbox => {
             checkbox.addEventListener('change', function() {
                 const checkedCount = document.querySelectorAll('input[name="selectedGenres"]:checked').length;
@@ -198,34 +198,32 @@
             });
         });
 
-        // Random Seçim Butonu
+        // Random Seç Butonu
         document.getElementById('randomSelect').addEventListener('click', function() {
             const checkboxes = document.querySelectorAll('input[name="selectedGenres"]');
             const randomCount = Math.floor(Math.random() * 3) + 1; // 1-3 arası rastgele
-
-            // Tüm seçimleri temizle
             checkboxes.forEach(cb => cb.checked = false);
-
-            // Rastgele seçim yap
             const shuffled = Array.from(checkboxes).sort(() => 0.5 - Math.random());
             shuffled.slice(0, randomCount).forEach(cb => cb.checked = true);
         });
 
-        // Hover ve Seçim Efektleri
+        // Sıfırla Butonu: Tüm genre checkbox’larını temizle
+        document.getElementById('resetButton').addEventListener('click', function() {
+            document.querySelectorAll('input[name="selectedGenres"]').forEach(cb => cb.checked = false);
+        });
+
+        // Hover ve seçim efektleri
         document.querySelectorAll('.genre-item').forEach(item => {
             item.addEventListener('mouseover', () => {
                 item.style.transform = 'scale(1.02)';
                 item.style.boxShadow = '0 4px 15px rgba(0,0,0,0.1)';
             });
-
             item.addEventListener('mouseout', () => {
                 item.style.transform = 'scale(1)';
                 if (!item.querySelector('input').checked) {
                     item.style.boxShadow = 'none';
                 }
             });
-
-            // Checkbox değiştiğinde stil güncelle
             item.querySelector('input').addEventListener('change', function() {
                 if (this.checked) {
                     item.style.boxShadow = '0 4px 15px rgba(0,0,0,0.2)';
@@ -285,5 +283,4 @@
         background: #0d6efd;
         height: 6px;
     }
-
 </style>
